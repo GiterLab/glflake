@@ -6,7 +6,8 @@
 //
 // 39 bits for time in units of 10 msec (178 years)
 // 16 bits for a machine id (65536 nodes, distributed machines)
-//  8 bits for a sequence number (0 ~ 255))
+//
+//	8 bits for a sequence number (0 ~ 255))
 package glflake
 
 import (
@@ -57,8 +58,8 @@ func (s *Settings) StartTimeSet(t time.Time) {
 	}
 }
 
-// glflake is a distributed unique ID generator.
-type glflake struct {
+// GLflake is a distributed unique ID generator.
+type GLflake struct {
 	mutex       *sync.Mutex
 	startTime   int64
 	elapsedTime int64
@@ -71,8 +72,8 @@ type glflake struct {
 // - Settings.StartTime is ahead of the current time.
 // - Settings.MachineID returns an error.
 // - Settings.CheckMachineID returns false.
-func NewGlflake(st Settings) *glflake {
-	gf := new(glflake)
+func NewGlflake(st Settings) *GLflake {
+	gf := new(GLflake)
 	gf.mutex = new(sync.Mutex)
 	gf.sequence = uint16(1<<BitLenSequence - 1)
 
@@ -100,8 +101,8 @@ func NewGlflake(st Settings) *glflake {
 }
 
 // NextID generates a next unique ID.
-// After the glflake time overflows, NextID returns an error.
-func (gf *glflake) NextID() (ID, error) {
+// After the GLflake time overflows, NextID returns an error.
+func (gf *GLflake) NextID() (ID, error) {
 	const maskSequence = uint16(1<<BitLenSequence - 1)
 
 	gf.mutex.Lock()
@@ -138,7 +139,7 @@ func sleepTime(overtime int64) time.Duration {
 		time.Duration(time.Now().UTC().UnixNano()%glflakeTimeUnit)*time.Nanosecond
 }
 
-func (gf *glflake) toID() (ID, error) {
+func (gf *GLflake) toID() (ID, error) {
 	if gf.elapsedTime >= 1<<BitLenTime {
 		return 0, errors.New("over the time limit")
 	}

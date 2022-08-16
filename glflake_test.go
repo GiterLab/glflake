@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var gf *glflake
+var gf *GLflake
 
 var startTime int64
 var machineID int64
